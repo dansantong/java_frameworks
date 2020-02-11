@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!--映射Product类对应数据库中的product_表-->
+<hibernate-mapping package="com.example">
+    <!--这里class后面的name包名要写完整，不然老报错解析不了这个xml-->
+    <class name="com.example.Product" table="product1">
+        <id name="id" column="id">
+            <generator class="native">
+            </generator>
+        </id>
+        <property name="name" />
+        <property name="price" />
+        <!--Product与Category的多对一关系-->
+        <many-to-one name="category" class="com.example.Category" column="cid"/>
+        <set name="users" table="user_product" lazy="false">
+            <!--外键是pid-->
+            <key column="pid"/>
+            <!--User与Product的多对多关系，用user_product中间表来维护-->
+            <many-to-many column="uid" class="com.example.User"/>
+        </set>
+    </class>
+
+</hibernate-mapping>

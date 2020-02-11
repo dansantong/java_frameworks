@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+        "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+
+<struts>
+    <constant name="struts.i18n.encoding" value="UTF-8"></constant>
+    <package name="basicstruts" extends="struts-default">
+        <!--当uri是hello的时候，也就是访问localhost/hello的时候，自动跳转到hello.jsp-->
+        <!--所以用localhost/hello和localhost/hello.jsp都可以访问jsp中的内容-->
+        <action name="hello">
+            <result>hello.jsp</result>
+        </action>
+        <!--访问/showProduct路径会调用ProductAction类的show方法，然后跳转到show.jsp-->
+        <action name="showProduct" class="action.ProductAction" method="show">
+            <result name="show">show.jsp</result>
+        </action>
+
+        <action name="addProduct" class="action.ProductAction" method="add">
+            <result name="show">show.jsp</result>
+        </action>
+
+        <action name="upload" class="action.UploadAction" method="upload">
+            <result name="success">success.jsp</result>
+        </action>
+    </package>
+</struts>

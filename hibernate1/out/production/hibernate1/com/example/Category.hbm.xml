@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!--映射Category类对应数据库中的category表-->
+<hibernate-mapping package="com.example">
+    <!--这里class后面的name包名要写完整，不然老报错解析不了这个xml-->
+    <class name="com.example.Category" table="category">
+        <id name="id" column="id">
+            <generator class="native">
+            </generator>
+        </id>
+        <property name="name" />
+        <!--Category与Product的一对多关系,一对多和多对多关系都用set设置-->
+        <!--lazy表示是否使用延迟加载-->
+        <set name="products" lazy="false">
+            <!--外键是cid-->
+            <key column="cid" not-null="false"/>
+            <one-to-many class="com.example.Product"/>
+        </set>
+    </class>
+
+</hibernate-mapping>

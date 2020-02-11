@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.example">
+    <!--这里class后面的name包名要写完整，不然老报错解析不了这个xml-->
+    <class name="com.example.User" table="user">
+        <id name="id" column="id">
+            <generator class="native">
+            </generator>
+        </id>
+        <property name="name" />
+        <set name="products" table="user_product" lazy="false">
+            <!--外键是uid-->
+            <key column="uid"/>
+            <!--User与Product的多对多关系，用user_product中间表来维护-->
+            <many-to-many column="pid" class="com.example.Product"/>
+        </set>
+    </class>
+
+</hibernate-mapping>

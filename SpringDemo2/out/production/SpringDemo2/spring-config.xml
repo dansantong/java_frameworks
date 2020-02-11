@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--使用注解方式注入对象-->
+    <!--<context:annotation-config/>-->
+    <!--通过关键字c获取category对象，并在获取时，向c的name属性注入category 1的值-->
+    <bean name="c" class="com.pojo.Category">
+        <property name="name" value="yyy"/>
+    </bean>
+
+    <bean name="p" class="com.pojo.Product">
+        <!--注入属性-->
+        <property name="name" value="product1"/>
+        <!--注入对象-->
+        <property name="category" ref="c"/>
+    </bean>
+
+    <!--告诉spring bean都在pojo包下,对bean本身也使用注解进行，下面这行代码和上面的一大段只能二选其一-->
+    <!--<context:component-scan base-package="com.pojo"/>-->
+
+    <bean name="s" class="com.service.ProductService">
+    </bean>
+
+    <bean id="loggerAspect" class="com.aspect.LoggerAspect"/>
+
+    <aop:config>
+        <!--切入点(也是JointPoint)，何处切入，expression后面是定义切点的正则式，也就是执行什么方法的时候触发切面-->
+        <aop:pointcut id="loggerCutpoint"
+                      expression=
+                              "execution(* com.service.ProductService.*(..)) "/>
+
+        <aop:aspect id="logAspect" ref="loggerAspect">
+            <!--通知，在方法执行的什么时机接入，并做什么-->
+            <!--around是环绕通知，将覆盖原有方法，但允许用户通过反射(proceed)调用原有方法-->
+            <aop:around pointcut-ref="loggerCutpoint" method="log"/>
+        </aop:aspect>
+    </aop:config>
+
+    <!--创建dao时注入SessionFactory-->
+    <bean name="dao" class="com.dao.CategoryDAO">
+        <property name="sessionFactory" ref="sf"/>
+    </bean>
+
+    <!--创建SessionFactory时注入数据源ds-->
+    <bean name="sf"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="ds"/>
+        <property name="mappingResources">
+            <list>
+                <value>com/pojo/Category.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=org.hibernate.dialect.MySQLDialect
+                hibernate.show_sql=true
+                hbm2ddl.auto=update
+            </value>
+        </property>
+    </bean>
+
+    <!--在这里配置了数据源相关，因此不需要再有hibernate.hbm.xml配置文件了-->
+    <bean name="ds"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/test?characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="admin"/>
+    </bean>
+</beans>
