@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pojo">
+    <resultMap id="categoryBean" type="Category">
+        <!--column是指用select从数据库里查询出来的字段，property是实体类中的字段-->
+        <id column="cid" property="id"/>
+        <result column="cname" property="name"/>
+        <!--一对多的关系-->
+        <!--property是集合属性的值，ofType是集合中元素的类型-->
+        <collection property="products" ofType="Product">
+            <id column="pid" property="id"/>
+            <result column="pname" property="name"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+
+    <insert id="addCategory" parameterType="Category">
+        insert into category (name) values (#{name})
+    </insert>
+
+    <delete id="deleteCategory" parameterType="Category">
+        delete from category where id = #{id}
+    </delete>
+
+    <select id="getCategory" parameterType="int" resultType="Category">
+        select * from category where id= #{id}
+    </select>
+
+    <update id="updateCategory" parameterType="Category">
+        update category set name= #{name} where id= #{id}
+    </update>
+
+    <!--使用left join进行关联查询，语句中对表和字段都取了别名-->
+    <select id="listCategory" resultMap="categoryBean">
+        select c.id cid,c.name cname,p.id pid,p.name pname,price from category c left join product1 p on c.id=p.cid
+    </select>
+</mapper>
